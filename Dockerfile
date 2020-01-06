@@ -1,4 +1,4 @@
-FROM php:7.2.3-fpm
+FROM php:7.3-fpm
 
 # UID and GID can be passed as argument
 # It should match the user running the application
