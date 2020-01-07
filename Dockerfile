@@ -15,6 +15,7 @@ COPY php.ini /etc/php/7.2.3/php.ini
 COPY php-fpm-pool.conf /etc/php/7.2.3/pool.d/www.conf
 
 RUN docker-php-ext-install pdo_mysql
+RUN docker-php-ext-configure intl
 
 # Add all php librairies
 RUN apt-get update && \
@@ -22,7 +23,8 @@ RUN apt-get update && \
     docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && \
     docker-php-ext-install gd && \
     docker-php-ext-install sysvsem && \
-    docker-php-ext-install xsl
+    docker-php-ext-install xsl && \
+    docker-php-ext-install intl
 
 RUN curl -sSk https://getcomposer.org/installer | php -- --disable-tls && \
    mv composer.phar /usr/local/bin/composer
