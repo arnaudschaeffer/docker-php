@@ -7,7 +7,7 @@ ARG GID=1000
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends vim curl debconf subversion git apt-transport-https apt-utils \
-    build-essential locales acl mailutils wget zip unzip libxslt-dev \
+    build-essential locales acl mailutils wget zip unzip libxslt-dev libzip-dev \
     procps \
     gnupg gnupg1 gnupg2
 
