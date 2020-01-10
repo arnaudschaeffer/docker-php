@@ -2,8 +2,8 @@ FROM php:7.3-fpm
 
 # UID and GID can be passed as argument
 # It should match the user running the application
-ARG UID=1000
-ARG GID=1000
+ENV UID=1000
+ENV GID=1000
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends vim curl debconf subversion git apt-transport-https apt-utils \
@@ -31,8 +31,8 @@ RUN apt-get update && \
 RUN curl -sSk https://getcomposer.org/installer | php -- --disable-tls && \
    mv composer.phar /usr/local/bin/composer
 
-RUN groupadd php -g "$UID"
-RUN useradd php -g php -u "$GID" -d /home/php -m
+RUN groupadd php -g $UID
+RUN useradd php -g php -u $GID -d /home/php -m
 
 RUN rm -rf /var/lib/apt/lists/*
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
