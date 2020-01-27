@@ -45,4 +45,4 @@ COPY rootfs/root/.bashrc /home/php/
 WORKDIR /var/www/html
 
 EXPOSE 9000
-CMD ["php-fpm"]
+CMD ["/docker-entrypoint.sh", "-f"]
