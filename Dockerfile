@@ -22,7 +22,10 @@ RUN apt-get update && \
     docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && \
     docker-php-ext-install gd && \
     docker-php-ext-install sysvsem && \
-    docker-php-ext-install xsl
+    docker-php-ext-install xsl && \
+    docker-php-ext-install intl && \
+    docker-php-ext-install bcmath && \
+    docker-php-ext-install zip
 
 RUN curl -sSk https://getcomposer.org/installer | php -- --disable-tls && \
    mv composer.phar /usr/local/bin/composer
