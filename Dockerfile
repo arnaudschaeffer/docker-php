@@ -5,6 +5,12 @@ FROM php:7.3-apache
 ENV UID=1000
 ENV GID=1000
 
+ENV UID_PROD=1001
+ENV GID_PROD=1001
+
+ENV UID_PREPROD=1002
+ENV GID_PREPROD=1002
+
 ## Configure Apache
 
 RUN a2enmod proxy_fcgi ssl rewrite proxy proxy_balancer proxy_http proxy_ajp
@@ -46,6 +52,12 @@ RUN chmod +x /*.sh
 
 RUN groupadd php -g $UID
 RUN useradd php -g php -u $GID -d /home/php -m
+
+RUN groupadd prod -g $UID_PROD
+RUN useradd prod -g prod -u $GID_PROD -d /home/prod -m
+
+RUN groupadd preprod -g $UID_PREPROD
+RUN useradd preprod -g preprod -u $GID_PREPROD -d /home/preprod -m
 
 COPY rootfs/root/.bashrc /home/php/
 
