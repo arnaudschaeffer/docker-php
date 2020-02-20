@@ -2,6 +2,4 @@
 
 set -x
 
-. /update_user.sh
-
-exec php-fpm
+exec "apache2-foreground"

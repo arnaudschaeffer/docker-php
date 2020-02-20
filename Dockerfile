@@ -1,4 +1,4 @@
-FROM php:7.3-fpm
+FROM php:7.3-apache
 
 # UID and GID can be passed as argument
 # It should match the user running the application
@@ -11,8 +11,7 @@ RUN apt-get update \
     procps \
     gnupg gnupg1 gnupg2
 
-COPY php.ini /etc/php/7.2.3/php.ini
-COPY php-fpm-pool.conf /etc/php/7.2.3/pool.d/www.conf
+COPY php.ini /etc/php/7.3/php.ini
 
 RUN docker-php-ext-install pdo_mysql
 RUN docker-php-ext-configure intl
@@ -35,8 +34,8 @@ RUN groupadd php -g $UID
 RUN useradd php -g php -u $GID -d /home/php -m
 
 RUN rm -rf /var/lib/apt/lists/*
-RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
-    echo "fr_FR.UTF-8 UTF-8" >> /etc/locale.gen && \
+RUN echo "fr_FR.UTF-8 UTF-8" > /etc/locale.gen && \
+    echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen && \
     locale-gen
 
 COPY rootfs /
@@ -44,5 +43,4 @@ COPY rootfs/root/.bashrc /home/php/
 
 WORKDIR /var/www/html
 
-EXPOSE 9000
 CMD ["/docker-entrypoint.sh", "-f"]
