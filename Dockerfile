@@ -1,18 +1,23 @@
-FROM php:7.2.3-fpm
+FROM php:7.2.3-apache
 
 # UID and GID can be passed as argument
 # It should match the user running the application
-ARG UID=1000
-ARG GID=1000
+ENV UID=1000
+ENV GID=1000
+
+## Configure Apache
+
+RUN a2enmod proxy_fcgi ssl rewrite proxy proxy_balancer proxy_http proxy_ajp
+
+## Configure PHP
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends vim curl debconf subversion git apt-transport-https apt-utils \
-    build-essential locales acl mailutils wget zip unzip libxslt-dev \
+    build-essential locales acl mailutils wget zip unzip libxslt-dev libzip-dev \
     procps \
     gnupg gnupg1 gnupg2
 
 COPY php.ini /etc/php/7.2.3/php.ini
-COPY php-fpm-pool.conf /etc/php/7.2.3/pool.d/www.conf
 
 RUN docker-php-ext-install pdo_mysql
 
@@ -42,5 +47,7 @@ COPY rootfs /
 COPY rootfs/root/.bashrc /home/php/
 
 WORKDIR /var/www/html
-EXPOSE 9000
-CMD ["php-fpm"]
+
+RUN chmod +x /*.sh
+
+CMD ["/docker-entrypoint.sh", "-f"]
