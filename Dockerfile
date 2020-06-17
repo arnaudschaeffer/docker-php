@@ -1,4 +1,4 @@
-FROM php:7.3-apache
+FROM php:7.2-apache
 
 # UID and GID can be passed as argument
 # It should match the user running the application
@@ -17,7 +17,7 @@ RUN apt-get update \
     procps \
     gnupg gnupg1 gnupg2
 
-COPY php.ini /etc/php/7.3/php.ini
+COPY php.ini /etc/php/7.2/php.ini
 
 RUN docker-php-ext-install pdo_mysql
 RUN docker-php-ext-configure intl
