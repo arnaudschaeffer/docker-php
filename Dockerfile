@@ -16,6 +16,7 @@ RUN apt-get update \
     build-essential locales acl mailutils wget zip unzip libxslt-dev libzip-dev \
     procps \
     gnupg gnupg1 gnupg2
+    && rm -rf /var/lib/apt/lists/*
 
 COPY php.ini /etc/php/7.2/php.ini
 
@@ -31,7 +32,8 @@ RUN apt-get update && \
     docker-php-ext-install xsl && \
     docker-php-ext-install intl && \
     docker-php-ext-install bcmath && \
-    docker-php-ext-install zip
+    docker-php-ext-install zip && \
+    xrm -rf /var/lib/apt/lists/*
 
 RUN curl -sSk https://getcomposer.org/installer | php -- --disable-tls && \
    mv composer.phar /usr/local/bin/composer
