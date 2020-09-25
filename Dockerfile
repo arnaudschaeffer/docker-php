@@ -27,12 +27,14 @@ RUN docker-php-ext-configure intl
 RUN apt-get update && \
     apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev && \
     docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && \
+    docker-php-ext-configure opcache --enable-opcache && \
     docker-php-ext-install gd && \
     docker-php-ext-install sysvsem && \
     docker-php-ext-install xsl && \
     docker-php-ext-install intl && \
     docker-php-ext-install bcmath && \
     docker-php-ext-install zip && \
+    docker-php-ext-install opcache && \
     xrm -rf /var/lib/apt/lists/*
 
 RUN curl -sSk https://getcomposer.org/installer | php -- --disable-tls && \
