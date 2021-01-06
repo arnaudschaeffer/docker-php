@@ -1,4 +1,4 @@
-FROM php:7.3-apache
+FROM php:7.4-apache
 
 # UID and GID can be passed as argument
 # It should match the user running the application
@@ -13,19 +13,20 @@ RUN a2enmod proxy_fcgi ssl rewrite proxy proxy_balancer proxy_http proxy_ajp
 
 RUN apt-get update \
     && apt-get install -y --no-install-recommends vim curl debconf subversion git apt-transport-https apt-utils \
-    build-essential locales acl mailutils wget zip unzip libxslt-dev libzip-dev \
+    build-essential locales acl mailutils wget zip unzip libxslt-dev libzip-dev libonig-dev\
+    libfreetype6-dev libjpeg62-turbo-dev libpng-dev \
     procps \
     gnupg gnupg1 gnupg2
 
-COPY php.ini /etc/php/7.3/php.ini
+COPY php.ini /etc/php/7.4/php.ini
 
-RUN docker-php-ext-install pdo_mysql
-RUN docker-php-ext-configure intl
+#RUN
+#RUN docker-php-ext-configure intl
 
 # Add all php librairies
-RUN apt-get update && \
-    apt-get install -y libfreetype6-dev libjpeg62-turbo-dev libpng-dev && \
-    docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ && \
+RUN docker-php-ext-configure intl && \
+    docker-php-ext-configure gd --with-jpeg=/usr/include/ --with-freetype=/usr/include/ && \
+    docker-php-ext-install pdo_mysql && \
     docker-php-ext-install gd && \
     docker-php-ext-install sysvsem && \
     docker-php-ext-install xsl && \
