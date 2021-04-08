@@ -1,4 +1,4 @@
-FROM php:7.4-apache
+FROM php:7.3-apache-stretch
 
 # UID and GID can be passed as argument
 # It should match the user running the application
@@ -12,11 +12,30 @@ RUN a2enmod proxy_fcgi ssl rewrite proxy proxy_balancer proxy_http proxy_ajp
 ## Configure PHP
 
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends vim curl debconf subversion git apt-transport-https apt-utils \
-    build-essential locales acl mailutils wget zip unzip libxslt-dev libzip-dev libonig-dev\
-    libfreetype6-dev libjpeg62-turbo-dev libpng-dev \
+    && apt-get install -y --no-install-recommends \
+    build-essential \
+    apt-transport-https \
+    apt-utils \
+    debconf \
+    libfreetype6-dev \
+    libjpeg62-turbo-dev \
+    libmcrypt-dev \
+    libpng-dev \
+    libwebp-dev \
+    curl \
+    vim \
+    unzip \
+    libzip-dev \
+    zip \
+    locales \
+    acl \
+    mailutils \
+    wget \
+    libxslt-dev \
+    libonig-dev\
     procps \
-    gnupg gnupg1 gnupg2
+    gnupg gnupg1 gnupg2 \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY php.ini /etc/php/7.4/php.ini
 
@@ -24,15 +43,22 @@ COPY php.ini /etc/php/7.4/php.ini
 #RUN docker-php-ext-configure intl
 
 # Add all php librairies
-RUN docker-php-ext-configure intl && \
-    docker-php-ext-configure gd --with-jpeg=/usr/include/ --with-freetype=/usr/include/ && \
+#Keep GD first: https://github.com/docker-library/php/issues/926#issuecomment-567230723
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg && \
+    docker-php-ext-configure intl && \
     docker-php-ext-install pdo_mysql && \
-    docker-php-ext-install gd && \
-    docker-php-ext-install sysvsem && \
-    docker-php-ext-install xsl && \
-    docker-php-ext-install intl && \
-    docker-php-ext-install bcmath && \
-    docker-php-ext-install zip
+    docker-php-ext-install  -j "$(nproc)" \
+        gd \
+        sysvsem \
+        xsl  \
+        intl \
+        bcmath \
+        zip \
+        opcache && \
+    rm -rf /var/lib/apt/lists/*
+
+#RUN pecl install imagick
+#RUN docker-php-ext-enable imagick
 
 RUN curl -sSk https://getcomposer.org/installer | php -- --disable-tls && \
    mv composer.phar /usr/local/bin/composer
@@ -53,5 +79,7 @@ COPY rootfs/root/.bashrc /home/php/
 COPY vhosts /etc/apache2/sites-enabled/
 
 WORKDIR /var/www/html
+
+RUN php -r 'var_dump(gd_info());'
 
 CMD ["/docker-entrypoint.sh", "-f"]
