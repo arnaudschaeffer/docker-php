@@ -58,8 +58,7 @@ RUN echo "fr_FR.UTF-8 UTF-8" > /etc/locale.gen && \
 COPY rootfs /
 RUN chmod +x /*.sh
 
-RUN groupadd php -g $UID
-RUN useradd php -g php -u $GID -d /home/php -m
+RUN useradd -G www-data,root -u $UID -d /home/php php
 
 COPY rootfs/root/.bashrc /home/php/
 
@@ -71,5 +70,3 @@ ENTRYPOINT ["/opt/entrypoint.sh"]
 EXPOSE 9000
 WORKDIR /var/www/html
 CMD ["php-fpm"]
-
-USER php
